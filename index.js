@@ -1,14 +1,17 @@
+// index.js
 const express = require('express');
 const cors = require('cors');
-const OpenAI = require('openai');
+const { Configuration, OpenAIApi } = require('openai');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const openai = new OpenAI({
+const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
+const openai = new OpenAIApi(configuration);
 
 app.post('/start', async (req, res) => {
   try {
@@ -17,13 +20,13 @@ app.post('/start', async (req, res) => {
       return res.status(400).json({ error: 'Missing prompt in request body' });
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    const response = await openai.createChatCompletion({
+      model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 300,
     });
 
-    res.json({ choices: [ { message: { content: response.choices[0].message.content } } ] });
+    res.json({ choices: response.data.choices });
   } catch (error) {
     console.error('Errore nella generazione della storia:', error);
     res.status(500).json({ error: 'Errore nel server' });
