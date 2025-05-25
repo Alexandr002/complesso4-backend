@@ -16,7 +16,7 @@ const openai = new OpenAIApi(configuration);
 app.post('/start', async (req, res) => {
   try {
     const prompt = `Sei un game master di un gioco horror ambientato in un complesso di appartamenti di 4 unità.
-    Crea una storia iniziale inquietante e malata, diversa ogni volta.`;
+Crea una storia iniziale inquietante e malata, diversa ogni volta.`;
 
     const response = await openai.createChatCompletion({
       model: 'gpt-4o-mini',
@@ -31,12 +31,9 @@ app.post('/start', async (req, res) => {
   }
 });
 
-// Porta da Render (o default 3000)
+// Porta da Render (o default 10000)
 const port = process.env.PORT || 10000;
 
 app.listen(port, () => {
   console.log(`Server in ascolto sulla porta ${port}`);
 });
-});
-
-module.exports = app;
