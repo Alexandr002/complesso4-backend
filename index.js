@@ -1,17 +1,16 @@
 // index.js
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Configuration, OpenAIApi } = require('openai');
-require('dotenv').config();
+const OpenAI = require('openai');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 app.post('/start', async (req, res) => {
   try {
@@ -20,20 +19,20 @@ app.post('/start', async (req, res) => {
       return res.status(400).json({ error: 'Missing prompt in request body' });
     }
 
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 300,
     });
 
-    res.json({ choices: response.data.choices });
+    res.json({ choices: response.choices });
   } catch (error) {
     console.error('Errore nella generazione della storia:', error);
     res.status(500).json({ error: 'Errore nel server' });
   }
 });
 
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server in ascolto sulla porta ${port}`);
 });
